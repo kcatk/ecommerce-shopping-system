@@ -6,8 +6,7 @@
 
 ✅ **MVC 架构** - Model/View/Controller 分离  
 ✅ **DAO 模式** - 统一数据访问接口  
-✅ **文件存储** - 购物车数据持久化到文件  
-✅ **数据库存储** - 订单数据存储到 MySQL  
+✅ **文件存储** - 商品、购物车、订单均持久化到 JSON 文件  
 ✅ **Swing GUI** - 完整的图形用户界面  
 
 ## 项目结构
@@ -38,61 +37,23 @@ src/
 ## 使用技术
 
 - Java Swing
-- JDBC
-- MySQL
 - Gson (JSON 处理)
 - File I/O
 
 ## 快速开始
 
-### 1. 创建数据库
+### 1. 准备数据文件
 
-```sql
-CREATE DATABASE ecommerce_db;
+项目启动时会读取：
 
-USE ecommerce_db;
+- `data/products.json`（初始商品）
+- `data/orders.json`（订单）
+- `data/shopping_cart.json`（购物车）
 
--- 商品表
-CREATE TABLE products (
-    id VARCHAR(20) PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    price DECIMAL(10, 2) NOT NULL,
-    stock INT NOT NULL
-);
-
--- 订单表
-CREATE TABLE orders (
-    id VARCHAR(20) PRIMARY KEY,
-    total_price DECIMAL(10, 2) NOT NULL,
-    create_time DATETIME NOT NULL,
-    status VARCHAR(20) NOT NULL
-);
-
--- 订单明细表
-CREATE TABLE order_items (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    order_id VARCHAR(20),
-    product_id VARCHAR(20),
-    quantity INT NOT NULL,
-    unit_price DECIMAL(10, 2) NOT NULL,
-    FOREIGN KEY (order_id) REFERENCES orders(id)
-);
-```
-
-### 2. 配置数据库连接
-
-编辑 `src/util/Constants.java`，配置数据库连接参数：
-
-```java
-public static final String DB_URL = "jdbc:mysql://localhost:3306/ecommerce_db";
-public static final String DB_USER = "root";
-public static final String DB_PASSWORD = "your_password";
-```
-
-### 3. 运行程序
+### 2. 运行程序
 
 ```bash
-java -cp .:lib/* util.Main
+mvn -q exec:java -Dexec.mainClass=com.ecommerce.Main
 ```
 
 ## 设计模式应用
@@ -101,7 +62,7 @@ java -cp .:lib/* util.Main
 
 - **Model** - `model/` 目录下的数据类
 - **View** - `view/` 目录下的 GUI 类
-- **Controller** - `controller/` 目录下的控制器类
+- **Controller** - `service/` 目录下的业务控制层
 
 Controller 协调 Model 和 View，处理用户交互。
 
@@ -109,8 +70,9 @@ Controller 协调 Model 和 View，处理用户交互。
 
 - **DAO 接口** - 定义数据访问规范
 - **DAO 实现** - 具体的数据访问实现
-  - `CartFileDAO` - 文件存储实现
-  - `OrderDBDAO` - 数据库存储实现
+  - `ProductDAOImpl` - 商品文件存储实现
+  - `OrderDAOFileImpl`/`OrderDAOMemoryImpl` - 订单文件/内存存储切换实现
+  - `ShoppingCartDAOFileImpl` - 购物车文件存储实现
 
 ## 项目成员分工
 

@@ -20,6 +20,10 @@ mvnw.cmd
 
 # Files
 data/
+!data/
+!data/products.json
+!data/orders.json
+!data/shopping_cart.json
 *.db
 *.sqlite
 logs/
